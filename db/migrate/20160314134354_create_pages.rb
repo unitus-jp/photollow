@@ -3,6 +3,7 @@ class CreatePages < ActiveRecord::Migration
     create_table :pages do |t|
       t.references :book, index: true, foreign_key: true
       t.string :url
+      t.string :thumbnail
       t.text :content
 
       t.timestamps null: false
