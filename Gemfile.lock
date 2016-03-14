@@ -36,6 +36,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    addressable (2.3.8)
     arel (6.0.3)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
@@ -59,6 +60,8 @@ GEM
       rails-erd (>= 0.4.5)
     erubis (2.7.0)
     execjs (2.6.0)
+    fastimage (1.9.0)
+      addressable (~> 2.3.5)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     haml (4.0.7)
@@ -185,6 +188,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   erb2haml
   erd
+  fastimage
   haml-rails
   hirb
   jbuilder (~> 2.0)

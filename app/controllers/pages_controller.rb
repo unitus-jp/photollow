@@ -1,5 +1,7 @@
 require 'open-uri'
 require 'nokogiri'
+require 'fastimage'
+require 'uri'
 
 class PagesController < ApplicationController
   before_action :set_page, only: [:show, :edit, :update, :destroy]
@@ -29,9 +31,10 @@ class PagesController < ApplicationController
   # POST /pages
   # POST /pages.json
   def create
+    redirect_to new_book_page_path(@book) unless valid_url?(page_params[:url])
     @page = Page.new(page_params)
     @page.book = @book
-    charset = "utf-8"
+    charset = nil
 
     begin
       html = open(params[:page][:url]) do |f|
@@ -46,11 +49,14 @@ class PagesController < ApplicationController
       end
     end
     doc = Nokogiri::HTML.parse(html, nil, charset)
-    hoge = doc.css("body img")
     doc.css("body img").each do |img|
-      @image = Image.new(url: img.attributes["src"].value)
-      @image.page = @page
-      @image.save
+      url = img.attributes["src"].value
+      width, height = FastImage.size(url)
+      if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+        @image = Image.new(url: url)
+        @image.page = @page
+        @image.save
+      end
     end
 
     respond_to do |format|
@@ -67,6 +73,31 @@ class PagesController < ApplicationController
   # PATCH/PUT /pages/1
   # PATCH/PUT /pages/1.json
   def update
+    redirect_to edit_book_pages_path(@book, @page) unless valid_url?(page_params[:url])
+    begin
+      charset = nil
+      html = open(params[:page][:url]) do |f|
+        charset = f.charset # 文字種別を取得
+        f.read # htmlを読み込んで変数htmlに渡す
+      end
+    rescue OpenURI::HTTPError => error
+      response = error.io
+      respond_to do |format|
+        format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
+      end
+    end
+    @page.images.delete_all
+    doc = Nokogiri::HTML.parse(html, nil, charset)
+    doc.css("body img").each do |img|
+      url = img.attributes["src"].value
+      width, height = FastImage.size(url)
+      if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+        @image = Image.new(url: url)
+        @image.page = @page
+        @image.save
+      end
+    end
+
     respond_to do |format|
       if @page.update(page_params)
         format.html { redirect_to book_page_path(@book, @page), notice: 'Page was successfully updated.' }
@@ -100,6 +131,14 @@ class PagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
-      params.require(:page).permit(:url, :content)
+      params.require(:page).permit(:url, :title)
+    end
+
+    def valid_url?(url)
+      if url =~ URI::regexp && !url.include?(" ")
+        true
+      else
+        false
+      end
     end
 end
