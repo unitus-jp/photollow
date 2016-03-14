@@ -18,9 +18,9 @@
         <td><%= page.book %></td>
         <td><%= page.url %></td>
         <td><%= page.content %></td>
-        <td><%= link_to 'Show', page %></td>
-        <td><%= link_to 'Edit', edit_page_path(page) %></td>
-        <td><%= link_to 'Destroy', page, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', book_page_path(@book, page) %></td>
+        <td><%= link_to 'Edit', edit_book_page_path(@book, page) %></td>
+        <td><%= link_to 'Destroy', book_page_path(@book, page), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -28,4 +28,4 @@
 
 <br>
 
-<%= link_to 'New Page', new_page_path %>
+<%= link_to 'New Page', new_book_page_path(@book) %>

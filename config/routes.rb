@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
-  resources :images
-  resources :pages
-  resources :books
+
+  resources :books do
+    resources :pages do
+      resources :images
+    end
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
