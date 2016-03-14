@@ -15,5 +15,13 @@
   <%= @page.content %>
 </p>
 
+<ul>
+  <%- @images.each do |image| %>
+    <li>
+      <img src="<%= image.url %>">
+    </li>
+  <% end %>
+</ul>
+
 <%= link_to 'Edit', edit_book_page_path(@book, @page) %> |
 <%= link_to 'Back', book_pages_path(@book) %>

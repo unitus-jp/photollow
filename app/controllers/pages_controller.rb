@@ -1,3 +1,6 @@
+require 'open-uri'
+require 'nokogiri'
+
 class PagesController < ApplicationController
   before_action :set_page, only: [:show, :edit, :update, :destroy]
   before_action :set_book
@@ -11,6 +14,7 @@ class PagesController < ApplicationController
   # GET /pages/1
   # GET /pages/1.json
   def show
+    @images = @page.images
   end
 
   # GET /pages/new
@@ -27,6 +31,27 @@ class PagesController < ApplicationController
   def create
     @page = Page.new(page_params)
     @page.book = @book
+    charset = "utf-8"
+
+    begin
+      html = open(params[:page][:url]) do |f|
+        charset = f.charset # 文字種別を取得
+        f.read # htmlを読み込んで変数htmlに渡す
+      end
+
+    rescue OpenURI::HTTPError => error
+      response = error.io
+      respond_to do |format|
+        format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
+      end
+    end
+    doc = Nokogiri::HTML.parse(html, nil, charset)
+    hoge = doc.css("body img")
+    doc.css("body img").each do |img|
+      @image = Image.new(url: img.attributes["src"].value)
+      @image.page = @page
+      @image.save
+    end
 
     respond_to do |format|
       if @page.save
@@ -75,6 +100,6 @@ class PagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
-      params.require(:page).permit(:book_id, :url, :content)
+      params.require(:page).permit(:url, :content)
     end
 end

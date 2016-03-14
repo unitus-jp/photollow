@@ -1,0 +1,17 @@
+%p#notice= notice
+%p
+  %strong Book:
+  = @page.book
+%p
+  %strong Url:
+  = @page.url
+%p
+  %strong Content:
+  = @page.content
+%ul
+  - @images.each do |image|
+    %li
+      %img{:src => "#{image.url}"}/
+= link_to 'Edit', edit_book_page_path(@book, @page)
+|
+= link_to 'Back', book_pages_path(@book)
