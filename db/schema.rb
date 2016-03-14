@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 20160314134440) do
 
   create_table "books", force: :cascade do |t|
     t.string   "title"
+    t.string   "thumbnail"
     t.text     "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
@@ -32,6 +33,7 @@ ActiveRecord::Schema.define(version: 20160314134440) do
   create_table "pages", force: :cascade do |t|
     t.integer  "book_id"
     t.string   "url"
+    t.string   "thumbnail"
     t.text     "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
