@@ -4,7 +4,7 @@ class CreatePages < ActiveRecord::Migration
       t.references :book, index: true, foreign_key: true
       t.string :url
       t.string :thumbnail
-      t.text :content
+      t.string :title
 
       t.timestamps null: false
     end

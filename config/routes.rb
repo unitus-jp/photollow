@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     resources :pages do
       resources :images, only: [] do
         member do
-          get "thubmnail"
+          post "thumbnail"
         end
       end
     end

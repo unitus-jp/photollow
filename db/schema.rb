@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20160314134440) do
     t.integer  "book_id"
     t.string   "url"
     t.string   "thumbnail"
-    t.text     "content"
+    t.string   "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
