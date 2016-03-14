@@ -1,8 +1,15 @@
 Rails.application.routes.draw do
 
   resources :books do
-    resources :pages
+    resources :pages do
+      resources :images, only: [] do
+        member do
+          get "thubmnail"
+        end
+      end
+    end
   end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

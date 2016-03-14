@@ -12,6 +12,7 @@
   - @images.each do |image|
     %li
       %img{:src => "#{image.url}"}/
+      = thubmnail_book_page_image_path(@book, @page, image.id)
 = link_to 'Edit', edit_book_page_path(@book, @page)
 |
 = link_to 'Back', book_pages_path(@book)
