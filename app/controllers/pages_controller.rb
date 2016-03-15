@@ -2,6 +2,7 @@ require 'open-uri'
 require 'nokogiri'
 require 'fastimage'
 require 'uri'
+require 'base64'
 
 class PagesController < ApplicationController
   before_action :set_page, only: [:show, :edit, :update, :destroy]
@@ -49,13 +50,22 @@ class PagesController < ApplicationController
       end
     end
     doc = Nokogiri::HTML.parse(html, nil, charset)
+    value = 0
     doc.css("body img").each do |img|
       url = img.attributes["src"].value
       width, height = FastImage.size(url)
-      if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-        @image = Image.new(url: url)
-        @image.page = @page
-        @image.save
+      begin
+        if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+          binary = Base64.encode64(open(url).read)
+          @image = Image.new(data: binary)
+          @image.page = @page
+          @image.save
+          if value == 0
+            @page.update(thumbnail: binary)
+            value++
+          end
+        end
+      rescue
       end
     end
 
@@ -91,10 +101,14 @@ class PagesController < ApplicationController
     doc.css("body img").each do |img|
       url = img.attributes["src"].value
       width, height = FastImage.size(url)
-      if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-        @image = Image.new(url: url)
-        @image.page = @page
-        @image.save
+      begin
+        if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+          binary = Base64.encode64(open(url).read)
+          @image = Image.new(data: binary)
+          @image.page = @page
+          @image.save
+        end
+      rescue
       end
     end
 

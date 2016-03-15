@@ -10,11 +10,11 @@
   = @page.title
 %p
   %strong thumbnail:
-  %img{:src => "#{@page.thumbnail}"}/
+  %img{:src => "data:text/plain;base64, #{@page.thumbnail}"}/
 %ul
   - @images.each do |image|
     %li
-      %img{:src => "#{image.url}"}/
+      %img{:src => "data:text/plain;base64, #{image.data}"}/
       = link_to "サムネイルに設定", thumbnail_book_page_image_path(@book, @page, image.id), method: :post
 = link_to 'Edit', edit_book_page_path(@book, @page)
 |

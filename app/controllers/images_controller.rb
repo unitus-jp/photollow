@@ -2,7 +2,7 @@ class ImagesController < ApplicationController
   before_action :set_params
 
   def thumbnail
-    @page.update(thumbnail: @image.url)
+    @page.update(thumbnail: @image.data)
     redirect_to book_page_path(@book, @page)
   end
 
@@ -16,6 +16,6 @@ class ImagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def image_params
-      params.require(:image).permit(:url)
+      params.require(:image).permit(:data)
     end
 end

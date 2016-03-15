@@ -13,6 +13,9 @@
         %td= page.book
         %td= page.url
         %td= page.title
+        %td
+          = page.thumbnail
+          %img{:src => "#{page.thumbnail}"}/
         %td= link_to 'Show', book_page_path(@book, page)
         %td= link_to 'Edit', edit_book_page_path(@book, page)
         %td= link_to 'Destroy', book_page_path(@book, page), method: :delete, data: { confirm: 'Are you sure?' }
