@@ -34,7 +34,7 @@ class PagesController < ApplicationController
   def create
     redirect_to new_book_page_path(@book) unless valid_url?(page_params[:url])
     order = @book.pages ? @book.pages.maximum("order").to_i + 1 : 0
-    params["page"]["order"] = order
+    params[:page][:order] = order
     @page = Page.new(page_params)
     @page.book = @book
     charset = nil
@@ -42,7 +42,7 @@ class PagesController < ApplicationController
     site_url = params[:page][:url]
 
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
-      binary = save_image(site_url, @page, 0)
+      binary = save_and_connect_image(site_url, @page, 0)
       @page.update(thumbnail: binary)
     else
       begin
@@ -62,15 +62,13 @@ class PagesController < ApplicationController
       doc.css("body img").each do |img|
         url = img.attributes["src"].value
         width, height = FastImage.size(url)
-        begin
-          if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-            binary = save_image(url, @page, order)
-            if order == 0
-              @page.update(thumbnail: binary)
-            end
-            order += 1
+
+        if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+          binary = save_and_connect_image(url, @page, order)
+          if order == 0
+            @page.update(thumbnail: binary)
           end
-        rescue
+          order += 1
         end
       end
     end
@@ -94,7 +92,7 @@ class PagesController < ApplicationController
 
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
       @page.images.delete_all
-      binary = save_image(site_url, @page, 0)
+      binary = save_and_connect_image(site_url, @page, 0)
       @page.update(thumbnail: binary)
     else
       begin
@@ -116,15 +114,12 @@ class PagesController < ApplicationController
         url = img.attributes["src"].value
         width, height = FastImage.size(url)
 
-        begin
-          if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-            binary = save_image(url, @page, order)
-            if order == 0
-              @page.update(thumbnail: binary)
-            end
-            order += 1
+        if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+          binary = save_and_connect_image(url, @page, order)
+          if order == 0
+            @page.update(thumbnail: binary)
           end
-        rescue
+          order += 1
         end
       end
     end
@@ -162,16 +157,21 @@ class PagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
-      params.require(:page).permit(:url, :title)
+      params.require(:page).permit(:url, :title, :order)
     end
 
-    def save_image(url, page, order)
-      order = Order.new(number: order)
-      order.page = page
+    def save_and_connect_image(url, page, order)
+      @order = Order.new(number: order)
       binary = Base64.encode64(open(url).read)
-      image = Image.find_or_create_by(data: binary)
-      order.image = image
-      order.save
+      image = Image.find_or_create_by(url: url) do |i|
+        i.data = binary
+      end
+      image.update(data: binary) if image.data != binary
+
+      @order.page = page
+      @order.image = image
+      @order.save
+
       return binary
     end
 

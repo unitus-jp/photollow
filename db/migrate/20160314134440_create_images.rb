@@ -1,10 +1,11 @@
 class CreateImages < ActiveRecord::Migration
   def change
     create_table :images do |t|
+      t.string :url, null: false
       t.binary :data, null: false
-      t.references :page, index: true, foreign_key: true
 
       t.timestamps null: false
     end
+    add_index :images, :url, :unique => true
   end
 end
