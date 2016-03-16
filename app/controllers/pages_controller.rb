@@ -33,14 +33,16 @@ class PagesController < ApplicationController
   # POST /pages.json
   def create
     redirect_to new_book_page_path(@book) unless valid_url?(page_params[:url])
-    @page = Page.new(page_params)
+    order = @book.pages ? @book.pages.maximum("order").to_i + 1 : 0
+    binding.pry
+    @page = Page.new(page_params, order: order)
     @page.book = @book
     charset = nil
 
     site_url = params[:page][:url]
 
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
-      binary = save_image(site_url, @page)
+      binary = save_image(site_url, @page, 0)
       @page.update(thumbnail: binary)
     else
       begin
@@ -56,17 +58,17 @@ class PagesController < ApplicationController
         end
       end
       doc = Nokogiri::HTML.parse(html, nil, charset)
-      value = 0
+      order = 0
       doc.css("body img").each do |img|
         url = img.attributes["src"].value
         width, height = FastImage.size(url)
         begin
           if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-            save_image(url, @page)
-            if value == 0
+            binary = save_image(url, @page, order)
+            if order == 0
               @page.update(thumbnail: binary)
-              value += 1
             end
+            order += 1
           end
         rescue
         end
@@ -92,7 +94,7 @@ class PagesController < ApplicationController
 
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
       @page.images.delete_all
-      binary = save_image(site_url, @page)
+      binary = save_image(site_url, @page, 0)
       @page.update(thumbnail: binary)
     else
       begin
@@ -109,13 +111,18 @@ class PagesController < ApplicationController
       end
       @page.images.delete_all
       doc = Nokogiri::HTML.parse(html, nil, charset)
+      order = 0
       doc.css("body img").each do |img|
         url = img.attributes["src"].value
         width, height = FastImage.size(url)
 
         begin
           if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-            save_image(url, @page)
+            binary = save_image(url, @page, order)
+            if order == 0
+              @page.update(thumbnail: binary)
+            end
+            order += 1
           end
         rescue
         end
@@ -158,9 +165,9 @@ class PagesController < ApplicationController
       params.require(:page).permit(:url, :title)
     end
 
-    def save_image(url, page)
+    def save_image(url, page, order)
       binary = Base64.encode64(open(url).read)
-      image = Image.new(data: binary)
+      image = Image.new(data: binary, order: order)
       image.page = page
       image.save
       return binary
