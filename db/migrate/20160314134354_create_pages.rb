@@ -5,6 +5,7 @@ class CreatePages < ActiveRecord::Migration
       t.string :url
       t.binary :thumbnail
       t.string :title
+      t.integer :order
 
       t.timestamps null: false
     end
