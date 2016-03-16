@@ -2,6 +2,9 @@ Rails.application.routes.draw do
 
   resources :books do
     resources :pages do
+      member do
+        post "sort"
+      end
       resources :images, only: [] do
         member do
           post "thumbnail"

@@ -5,7 +5,7 @@ require 'uri'
 require 'base64'
 
 class PagesController < ApplicationController
-  before_action :set_page, only: [:show, :edit, :update, :destroy]
+  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort]
   before_action :set_book
 
   # GET /pages
@@ -143,6 +143,17 @@ class PagesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to book_pages_url(@book), notice: 'Page was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def sort
+    @page.images.delete_all
+    data = params[:order]
+    data.each_with_index do |id, index|
+      Order.create(page_id: @page.id, image_id: id.to_i, number: index)
+    end
+    respond_to do |format|
+      format.json { render json: "success" }
     end
   end
 
