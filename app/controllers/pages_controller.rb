@@ -34,8 +34,8 @@ class PagesController < ApplicationController
   def create
     redirect_to new_book_page_path(@book) unless valid_url?(page_params[:url])
     order = @book.pages ? @book.pages.maximum("order").to_i + 1 : 0
-    binding.pry
-    @page = Page.new(page_params, order: order)
+    params["page"]["order"] = order
+    @page = Page.new(page_params)
     @page.book = @book
     charset = nil
 
@@ -162,7 +162,7 @@ class PagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
-      params.require(:page).permit(:url, :title)
+      params.require(:page).permit(:url, :title, :order)
     end
 
     def save_image(url, page, order)
