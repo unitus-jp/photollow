@@ -3,7 +3,9 @@ class ImagesController < ApplicationController
 
   def thumbnail
     @page.update(thumbnail: @image.data)
-    redirect_to edit_book_page_path(@book, @page)
+    respond_to do |format|
+      format.json { render json: {data: @image.data } }
+    end
   end
 
   private
@@ -18,4 +20,5 @@ class ImagesController < ApplicationController
     def image_params
       params.require(:image).permit(:data)
     end
+
 end
