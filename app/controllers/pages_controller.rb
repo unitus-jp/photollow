@@ -187,14 +187,14 @@ class PagesController < ApplicationController
         doc = Nokogiri::HTML.parse(html, nil, charset)
         order = params[:order].to_i
         old_orders =  @page.orders.order("number ASC")
-        size = @orders.size
+        size = old_orders.size
         append_orders = old_orders.last(size - order)
 
 
         doc.css("body img").each do |img|
           url = img.attributes["src"].value
           width, height = FastImage.size(url)
-          if  width > 299
+          if height > params[:under_height].to_i && width > params[:under_width].to_i
             binary = save_and_connect_image(url, @page, order)
           end
           order += 1
@@ -206,9 +206,7 @@ class PagesController < ApplicationController
       end
     # rescue
     # end
-    respond_to do |format|
-      format.json { render json: {status: "success" } }
-    end
+    @orders = @page.orders.order("number ASC")
   end
 
   private

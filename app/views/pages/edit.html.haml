@@ -15,21 +15,34 @@
   %strong thumbnail:
   %img{:src => "data:text/plain;base64, #{@page.thumbnail}", id: "thumbnail"}/
 
+#modal.modal.fade{"aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
+  .modal-dialog{:role => "document"}
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+        %h4#myModalLabel.modal-title Modal title
+      .modal-body
+        %span#beforenumber
+        枚目の後に画像を追加する
+        .field
+          %label URL
+          %br
+          %input{ type:"text", value: "", id:"add_url" }
+        .field
+          %label under_width
+          %br/
+          = number_field :under_width, nil, {min: 0, value: 300, id: "add_under_width"}
+        .field
+          %label under_height
+          %br/
+          = number_field :under_height, nil, {min: 0, value: 300, id: "add_under_height"}
+      .modal-footer
+        %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
+        %button#addimage.btn.btn-primary{:type => "button"} Save changes
+
 %article#main.edit
-  #resize
-    .items#sort
-      - @orders.each_with_index do |order, index|
-        .item{id: "image-#{order.image.id}"}
-          %img{:src => "data:text/plain;base64, #{order.image.data}"}/
-          .menubar
-            .set-thumbnail
-              = fa_icon "tv"
-          .mask-top
-            .sidemenu{ class: "number-#{index}" }
-              = fa_icon "plus", text: "ここに追加"
-          .mask-bottom
-            .sidemenu{ class: "number-#{index + 1}" }
-              = fa_icon "plus", text: "ここに追加", class: "number-1#{index + 1}"
+  = render partial: "edit_page", locals: {orders: @orders}
 
 = link_to 'Show', book_page_path(@book, @page)
 |
@@ -55,17 +68,24 @@
     })
     $(".sidemenu").on("click", function(){
       var order = this.className.split(" ")[0].split("number-")[1];
+      $("#beforenumber").text(order)
+    })
+    $("#addimage").on("click", function(){
       $.ajax({
         type: "POST",
         url: ("/books/#{@book.id}/pages/#{@page.id}/add"),
         data: {
-          order: order
+          "order": $("#beforenumber").text(),
+          "url": $("#add_url")[0].value,
+          "under_height":  $("#add_under_height")[0].value,
+          "under_width":  $("#add_under_width")[0].value
         },
         success: function(data){
-          console.log("success")
+          console.log(data.orders);
+          $('#myModal').modal('hide')
         }
-      });
-    })
+      })
+    });
     $('#sort').on('sortstop', function(){
       sorted_order = []
       $("#sort .item").each(function(index, data){
