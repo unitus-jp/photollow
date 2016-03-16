@@ -16,3 +16,19 @@
 
 @import "font-awesome";
 
+body {
+  margin: 0 auto;
+  padding: 0;
+}
+
+header {
+  background-color: pink;
+  height: 40px;
+  .brand {
+    font-size: 24px;
+    height: 40px;
+    vertical-align: middle;
+    display: table-cell;
+    padding-left: 24px;
+  }
+}
