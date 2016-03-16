@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :pages do
       member do
         post "sort"
+        post "add"
       end
       resources :images, only: [] do
         member do
