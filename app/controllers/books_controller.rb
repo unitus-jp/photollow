@@ -25,6 +25,7 @@ class BooksController < ApplicationController
   # POST /books
   # POST /books.json
   def create
+    params[:book][:name] = random_word
     @book = Book.new(book_params)
     respond_to do |format|
       if @book.save
@@ -69,6 +70,12 @@ class BooksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def book_params
-      params.require(:book).permit(:title, :description)
+      params.require(:book).permit(:title, :description, :name)
+    end
+
+    def random_word
+      o = [('a'..'z'), ('A'..'Z'), ('0'..'9')].map { |i| i.to_a }.flatten
+      string = (0...24).map { o[rand(o.length)] }.join
+      return string
     end
 end
