@@ -13,16 +13,16 @@
   = @page.title
 %p
   %strong thumbnail:
-  %img{:src => "data:text/plain;base64, #{@page.thumbnail}"}/
+  %img{:src => "data:text/plain;base64, #{@page.thumbnail}", id: "thumbnail"}/
 
 %article#main.edit
   #resize
     .items#sort
-      - @images.each_with_index do |image, index|
-        .item{id: "image-#{image.id}"}
-          %img{:src => "data:text/plain;base64, #{image.data}"}/
+      - @orders.each_with_index do |order, index|
+        .item{id: "image-#{order.image.id}"}
+          %img{:src => "data:text/plain;base64, #{order.image.data}"}/
           .menubar
-            = link_to thumbnail_book_page_image_path(@book, @page, image.id), method: :post, data: {confirm: "サムネイルに設定しますか？"} do
+            .set-thumbnail
               = fa_icon "tv"
           .mask-top
             .sidemenu{ class: "number-#{index}" }
@@ -42,6 +42,30 @@
       minWidth: 240
     })
     $('#sort').sortable()
+    $(".set-thumbnail").on("click", function(){
+      var data = this.parentElement.parentElement
+      var img_id = data.id.split('image-')[1]
+      $.ajax({
+        type: "POST",
+        url: ("/books/#{@book.id}/pages/#{@page.id}/images/" + img_id + "/thumbnail"),
+        success: function(data){
+         $("#thumbnail")[0].src = "data:text/plain;base64, " + data.data
+        }
+      });
+    })
+    $(".sidemenu").on("click", function(){
+      var order = this.className.split(" ")[0].split("number-")[1];
+      $.ajax({
+        type: "POST",
+        url: ("/books/#{@book.id}/pages/#{@page.id}/add"),
+        data: {
+          order: order
+        },
+        success: function(data){
+          console.log("success")
+        }
+      });
+    })
     $('#sort').on('sortstop', function(){
       sorted_order = []
       $("#sort .item").each(function(index, data){
@@ -54,9 +78,8 @@
             "order": sorted_order
         },
         success: function(data){
-          data
         }
-    });
+      });
 
     })
   })
