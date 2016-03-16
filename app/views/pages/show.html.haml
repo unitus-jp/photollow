@@ -16,6 +16,8 @@
     %li
       %img{:src => "data:text/plain;base64, #{image.data}"}/
       = link_to "サムネイルに設定", thumbnail_book_page_image_path(@book, @page, image.id), method: :post
+      .menu
+        = fa_icon "plus", text: "ここに追加"
 = link_to 'Edit', edit_book_page_path(@book, @page)
 |
 = link_to 'Back', book_pages_path(@book)
