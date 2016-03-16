@@ -11,9 +11,9 @@
 %p
   %strong thumbnail:
   %img{:src => "data:text/plain;base64, #{@page.thumbnail}"}/
-%ul
+%article
   - @images.each do |image|
-    %li
+    .image
       %img{:src => "data:text/plain;base64, #{image.data}"}/
       = link_to "サムネイルに設定", thumbnail_book_page_image_path(@book, @page, image.id), method: :post
       .menu
