@@ -27,6 +27,7 @@ class PagesController < ApplicationController
 
   # GET /pages/1/edit
   def edit
+    @images = @page.images
   end
 
   # POST /pages

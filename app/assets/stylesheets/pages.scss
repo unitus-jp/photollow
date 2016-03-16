@@ -1,10 +1,89 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+article.edit {
+ width: 600px;
+}
 article {
   margin: 0 auto;
   width: 80%;
-  .image {
+  background-color: #efefef;
+  #resize {
+    margin: 0 auto;
     background-color: white;
+    border: 4px solid darkorange;
+
+    .item {
+      padding: 48px 10%;
+      margin: 0 auto;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+      position: relative;
+      &.ui-sortable-helper {
+        background-color: white;
+        border: solid 1px #ddd;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+      }
+      &:hover {
+        .menubar {
+          display: block;
+        }
+      }
+      .menubar {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        z-index: 6;
+        display: none;
+      }
+      .sidemenu {
+        height: 18px;
+        line-height: 18px;
+        vertical-align: middle;
+        position: absolute;
+        left: calc(100% - 24px);
+        display: none;
+        background-color: white;
+        padding: 8px;
+        border: solid 1px #ccc;
+      }
+      .mask-top {
+        position: absolute;
+        top: 0px;
+        width: calc(100% + 64px);
+        height: 50%;
+        left: 0px;
+        z-index: 5;
+        &:hover {
+          .sidemenu {
+            display: table;
+          }
+        }
+        .sidemenu {
+          top: -24px;
+        }
+      }
+      .mask-bottom {
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        width: calc(100% + 64px);
+        height: 50%;
+        z-index: 5;
+        &:hover {
+          .sidemenu {
+            display: table;
+          }
+        }
+        .sidemenu {
+          bottom: -13px;
+        }
+      }
+      img {
+        width: 100%;
+      }
+    }
   }
 }
+
+

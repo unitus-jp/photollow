@@ -3,7 +3,7 @@ class ImagesController < ApplicationController
 
   def thumbnail
     @page.update(thumbnail: @image.data)
-    redirect_to book_page_path(@book, @page)
+    redirect_to edit_book_page_path(@book, @page)
   end
 
   private
