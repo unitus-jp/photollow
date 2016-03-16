@@ -11,7 +11,7 @@ class PagesController < ApplicationController
   # GET /pages
   # GET /pages.json
   def index
-    @pages = Page.all
+    @pages = @book.pages
   end
 
   # GET /pages/1
@@ -37,35 +37,39 @@ class PagesController < ApplicationController
     @page.book = @book
     charset = nil
 
-    begin
-      html = open(params[:page][:url]) do |f|
-        charset = f.charset # 文字種別を取得
-        f.read # htmlを読み込んで変数htmlに渡す
-      end
+    site_url = params[:page][:url]
 
-    rescue OpenURI::HTTPError => error
-      response = error.io
-      respond_to do |format|
-        format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
-      end
-    end
-    doc = Nokogiri::HTML.parse(html, nil, charset)
-    value = 0
-    doc.css("body img").each do |img|
-      url = img.attributes["src"].value
-      width, height = FastImage.size(url)
+    if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
+      binary = save_image(site_url, @page)
+      @page.update(thumbnail: binary)
+    else
       begin
-        if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-          binary = Base64.encode64(open(url).read)
-          @image = Image.new(data: binary)
-          @image.page = @page
-          @image.save
-          if value == 0
-            @page.update(thumbnail: binary)
-            value++
-          end
+        html = open(site_url) do |f|
+          charset = f.charset # 文字種別を取得
+          f.read # htmlを読み込んで変数htmlに渡す
         end
-      rescue
+
+      rescue OpenURI::HTTPError => error
+        response = error.io
+        respond_to do |format|
+          format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
+        end
+      end
+      doc = Nokogiri::HTML.parse(html, nil, charset)
+      value = 0
+      doc.css("body img").each do |img|
+        url = img.attributes["src"].value
+        width, height = FastImage.size(url)
+        begin
+          if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+            save_image(url, @page)
+            if value == 0
+              @page.update(thumbnail: binary)
+              value += 1
+            end
+          end
+        rescue
+        end
       end
     end
 
@@ -84,31 +88,37 @@ class PagesController < ApplicationController
   # PATCH/PUT /pages/1.json
   def update
     redirect_to edit_book_pages_path(@book, @page) unless valid_url?(page_params[:url])
-    begin
-      charset = nil
-      html = open(params[:page][:url]) do |f|
-        charset = f.charset # 文字種別を取得
-        f.read # htmlを読み込んで変数htmlに渡す
-      end
-    rescue OpenURI::HTTPError => error
-      response = error.io
-      respond_to do |format|
-        format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
-      end
-    end
-    @page.images.delete_all
-    doc = Nokogiri::HTML.parse(html, nil, charset)
-    doc.css("body img").each do |img|
-      url = img.attributes["src"].value
-      width, height = FastImage.size(url)
+    site_url = page_params[:url]
+
+    if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
+      @page.images.delete_all
+      binary = save_image(site_url, @page)
+      @page.update(thumbnail: binary)
+    else
       begin
-        if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
-          binary = Base64.encode64(open(url).read)
-          @image = Image.new(data: binary)
-          @image.page = @page
-          @image.save
+        charset = nil
+        html = open(params[:page][:url]) do |f|
+          charset = f.charset # 文字種別を取得
+          f.read # htmlを読み込んで変数htmlに渡す
         end
-      rescue
+      rescue OpenURI::HTTPError => error
+        response = error.io
+        respond_to do |format|
+          format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
+        end
+      end
+      @page.images.delete_all
+      doc = Nokogiri::HTML.parse(html, nil, charset)
+      doc.css("body img").each do |img|
+        url = img.attributes["src"].value
+        width, height = FastImage.size(url)
+
+        begin
+          if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
+            save_image(url, @page)
+          end
+        rescue
+        end
       end
     end
 
@@ -146,6 +156,14 @@ class PagesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
       params.require(:page).permit(:url, :title)
+    end
+
+    def save_image(url, page)
+      binary = Base64.encode64(open(url).read)
+      image = Image.new(data: binary)
+      image.page = page
+      image.save
+      return binary
     end
 
     def valid_url?(url)
