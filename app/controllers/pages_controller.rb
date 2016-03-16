@@ -162,14 +162,16 @@ class PagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_params
-      params.require(:page).permit(:url, :title, :order)
+      params.require(:page).permit(:url, :title)
     end
 
     def save_image(url, page, order)
+      order = Order.new(number: order)
+      order.page = page
       binary = Base64.encode64(open(url).read)
-      image = Image.new(data: binary, order: order)
-      image.page = page
-      image.save
+      image = Image.find_or_create_by(data: binary)
+      order.image = image
+      order.save
       return binary
     end
 
