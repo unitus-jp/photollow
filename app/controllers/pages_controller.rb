@@ -5,7 +5,7 @@ require 'uri'
 require 'base64'
 
 class PagesController < ApplicationController
-  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort]
+  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort, :add]
   before_action :set_book
 
   # GET /pages
@@ -17,7 +17,7 @@ class PagesController < ApplicationController
   # GET /pages/1
   # GET /pages/1.json
   def show
-    @images = @page.images
+    @orders = @page.orders.order("number ASC")
   end
 
   # GET /pages/new
@@ -27,7 +27,7 @@ class PagesController < ApplicationController
 
   # GET /pages/1/edit
   def edit
-    @images = @page.images
+    @orders = @page.orders.order("number ASC")
   end
 
   # POST /pages
@@ -153,7 +153,61 @@ class PagesController < ApplicationController
       Order.create(page_id: @page.id, image_id: id.to_i, number: index)
     end
     respond_to do |format|
-      format.json { render json: "success" }
+      format.json { render json: {status: "success" } }
+    end
+  end
+
+  def add
+    # begin
+      site_url = params[:url]
+      if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
+        order = params[:order].to_i
+        old_orders =  @page.orders.order("number ASC")
+        size = old_orders.size
+        append_orders = old_orders.last(size - order)
+        binary = save_and_connect_image(site_url, @page, order)
+        order += 1
+        append_orders.each do |new_order|
+          new_order.update(number: order)
+          order += 1
+        end
+      else
+        charset = nil
+        begin
+          html = open(site_url) do |f|
+            charset = f.charset # 文字種別を取得
+            f.read # htmlを読み込んで変数htmlに渡す
+          end
+        rescue OpenURI::HTTPError => error
+          response = error.io
+          respond_to do |format|
+            format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
+          end
+        end
+        doc = Nokogiri::HTML.parse(html, nil, charset)
+        order = params[:order].to_i
+        old_orders =  @page.orders.order("number ASC")
+        size = @orders.size
+        append_orders = old_orders.last(size - order)
+
+
+        doc.css("body img").each do |img|
+          url = img.attributes["src"].value
+          width, height = FastImage.size(url)
+          if  width > 299
+            binary = save_and_connect_image(url, @page, order)
+          end
+          order += 1
+        end
+        append_orders.each do |new_order|
+          new_order.update(number: order)
+          order += 1
+        end
+      end
+    # rescue
+    # end
+    respond_to do |format|
+      format.json { render json: {status: "success" } }
     end
   end
 

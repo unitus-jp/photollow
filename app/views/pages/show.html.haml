@@ -15,9 +15,9 @@
 %article#main
   #resize
     .items
-      - @images.each do |image|
+      - @orders.each do |order|
         .item
-          %img{:src => "data:text/plain;base64, #{image.data}"}/
+          %img{:src => "data:text/plain;base64, #{order.image.data}"}/
 
 = link_to 'Edit', edit_book_page_path(@book, @page)
 |
