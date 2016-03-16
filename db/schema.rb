@@ -14,7 +14,7 @@
 ActiveRecord::Schema.define(version: 20160314134440) do
 
   create_table "books", force: :cascade do |t|
-    t.string   "title"
+    t.string   "title",       null: false
     t.binary   "thumbnail"
     t.text     "description"
     t.datetime "created_at",  null: false
@@ -22,9 +22,9 @@ ActiveRecord::Schema.define(version: 20160314134440) do
   end
 
   create_table "images", force: :cascade do |t|
-    t.binary   "data"
+    t.binary   "data",       null: false
     t.integer  "page_id"
-    t.integer  "order"
+    t.integer  "order",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -33,10 +33,10 @@ ActiveRecord::Schema.define(version: 20160314134440) do
 
   create_table "pages", force: :cascade do |t|
     t.integer  "book_id"
-    t.string   "url"
+    t.string   "url",        null: false
     t.binary   "thumbnail"
-    t.string   "title"
-    t.integer  "order"
+    t.string   "title",      null: false
+    t.integer  "order",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
