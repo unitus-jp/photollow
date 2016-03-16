@@ -3,7 +3,6 @@ class CreateImages < ActiveRecord::Migration
     create_table :images do |t|
       t.binary :data, null: false
       t.references :page, index: true, foreign_key: true
-      t.integer :order, null: false
 
       t.timestamps null: false
     end
