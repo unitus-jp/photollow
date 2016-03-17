@@ -1,6 +1,6 @@
 #resize
   .items#sort
-    - orders.each_with_index do |order, index|
+    - @orders.each_with_index do |order, index|
       .item{id: "image-#{order.image.id}"}
         %img{:src => "data:text/plain;base64, #{order.image.data}"}/
         .menubar

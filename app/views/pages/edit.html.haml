@@ -1,19 +1,19 @@
-%h1 Editing Page
-= render 'form'
+// %h1 Editing Page
+// = render 'form'
 
-%p#notice= notice
-%p
-  %strong Book:
-  = @page.book
-%p
-  %strong Url:
-  = @page.url
-%p
-  %strong title:
-  = @page.title
-%p
-  %strong thumbnail:
-  %img{:src => "data:text/plain;base64, #{@page.thumbnail}", id: "thumbnail"}/
+// %p#notice= notice
+// %p
+//   %strong Book:
+//   = @page.book
+// %p
+//   %strong Url:
+//   = @page.url
+// %p
+//   %strong title:
+//   = @page.title
+// %p
+//   %strong thumbnail:
+//   %img{:src => "data:text/plain;base64, #{@page.thumbnail}", id: "thumbnail"}/
 
 #addmodal.modal.fade{"aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
   .modal-dialog{:role => "document"}
@@ -40,10 +40,16 @@
       .modal-footer
         %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
         %button#addimage.btn.btn-primary{:type => "button"} Save changes
-
-%article#main.edit
-  = render partial: "images", locals: {orders: @orders}
-
+.container
+  .row
+    .col-md-3
+    .col-md-6
+      #hoge
+        かえる
+      = render 'form'
+      %article#main.edit
+        = render partial: "images", locals: {orders: @orders}
+    .col-md-3
 = link_to 'Show', book_page_path(@book, @page)
 |
 = link_to 'Back', book_pages_path(@book)
@@ -101,5 +107,11 @@
         }
       });
 
+    })
+
+    $("#hoge").on('click', function(){
+      hoge = $(this).text()
+      $('#hoge').html("#{ j(render(:partial => 'pages/form/title', locals: {name: @page.title})) }")
+      $("#hoge input")[0].value = hoge
     })
   })

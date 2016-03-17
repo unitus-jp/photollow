@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 article.edit {
- width: 602px;
+ max-width: 602px;
  border: solid 1px #ddd
 }
 article {
@@ -12,10 +12,19 @@ article {
   box-shadow: 0px 0px 10px #777 inset;
   #resize {
     margin: 0 auto;
-    box-shadow: rgb(170, 170, 170) 0px 10px 10px;
-    background-color: white;
-
+    height: auto !important;
     .item {
+      box-shadow: rgb(170, 170, 170) 0px 0px 10px;
+      z-index: 1;
+      &:first-child {
+        box-shadow: #aaaaaa 0px 4px 10px;
+      }
+      &:last-child {
+        z-index: 0;
+        box-shadow: #aaaaaa 0px -4px 10px;
+        border-bottom: none;
+      }
+      background-color: white;
       box-sizing: border-box;
       padding: 48px 10%;
       margin: 0 auto;
