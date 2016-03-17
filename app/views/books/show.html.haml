@@ -7,8 +7,10 @@
   = @book.description
 
 - @pages.each do |page|
-  = page.title
-  %img{:src => "data:text/plain;base64, #{page.thumbnail}"}/
+  = link_to book_custom_page_path(@book, page.order) do
+    = page.title
+    %img{:src => "data:text/plain;base64, #{page.thumbnail}"}/
+
 
 = link_to 'Edit', edit_book_path(@book)
 |

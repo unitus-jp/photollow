@@ -12,7 +12,7 @@ class ImagesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_params
       @book = Book.find(params[:book_id])
-      @page = @book.pages.find(params[:page_id])
+      @page = @book.pages.find_by(order: params[:custom_page_order])
       @image = @page.images.find(params[:id])
     end
 

@@ -8,7 +8,7 @@
     $("#changetitle").on("click", function(){
      $.ajax({
         type: "POST",
-        url: ("/books/#{book_id}/pages/#{page_id}/changename"),
+        url: ("/books/#{book_id}/pages/#{page_order}/changename"),
         data: {
           "name": $("#title .content input")[0].value
         },

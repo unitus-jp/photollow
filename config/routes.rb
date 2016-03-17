@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   resources :books do
-    resources :pages, param: :order do
+    resources :pages, param: :order, as: :custom_page do
       member do
         post "sort"
         post "add"

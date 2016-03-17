@@ -5,5 +5,6 @@ class Page < ActiveRecord::Base
   has_many :images
   has_many :orders
   has_many :images, through: :orders
+
 end
 

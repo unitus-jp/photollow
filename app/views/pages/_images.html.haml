@@ -34,9 +34,9 @@
       })
       $.ajax({
         type: "POST",
-        url: ("/books/#{@book.id}/pages/#{@page.id}/sort"),
+        url: ("/books/#{@book.id}/pages/#{@page.order}/sort"),
         data: {
-            "order": sorted_order
+            "image_order": sorted_order
         },
         success: function(data){
           $(".index").each(function(index, data){$(data).text(index + 1)})
@@ -59,7 +59,7 @@
       var img_id = data.id.split('image-')[1]
       $.ajax({
         type: "POST",
-        url: ("/books/#{@book.id}/pages/#{@page.id}/images/" + img_id + "/thumbnail"),
+        url: ("/books/#{@book.id}/pages/#{@page.order}/images/" + img_id + "/thumbnail"),
         success: function(data){
          $("#thumbnail")[0].src = "data:text/plain;base64, " + data.data
         }
