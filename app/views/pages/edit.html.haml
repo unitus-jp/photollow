@@ -15,7 +15,7 @@
   %strong thumbnail:
   %img{:src => "data:text/plain;base64, #{@page.thumbnail}", id: "thumbnail"}/
 
-#modal.modal.fade{"aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
+#addmodal.modal.fade{"aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
   .modal-dialog{:role => "document"}
     .modal-content
       .modal-header
@@ -42,7 +42,7 @@
         %button#addimage.btn.btn-primary{:type => "button"} Save changes
 
 %article#main.edit
-  = render partial: "edit_page", locals: {orders: @orders}
+  = render partial: "images", locals: {orders: @orders}
 
 = link_to 'Show', book_page_path(@book, @page)
 |
@@ -81,8 +81,7 @@
           "under_width":  $("#add_under_width")[0].value
         },
         success: function(data){
-          console.log(data.orders);
-          $('#myModal').modal('hide')
+          $('#addModal').modal('hide')
         }
       })
     });
@@ -98,6 +97,7 @@
             "order": sorted_order
         },
         success: function(data){
+          $(".index").each(function(index, data){$(data).text(index + 1)})
         }
       });
 
