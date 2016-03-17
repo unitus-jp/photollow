@@ -44,8 +44,8 @@
   .row
     .col-md-3
     .col-md-6
-      #hoge
-        かえる
+      #title
+        = render partial: "titlecomplete", locals: {name: @page.title}
       = render 'form'
       %article#main.edit
         = render partial: "images", locals: {orders: @orders}
@@ -109,9 +109,4 @@
 
     })
 
-    $("#hoge").on('click', function(){
-      hoge = $(this).text()
-      $('#hoge').html("#{ j(render(:partial => 'pages/form/title', locals: {name: @page.title})) }")
-      $("#hoge input")[0].value = hoge
-    })
   })

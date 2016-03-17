@@ -5,7 +5,7 @@ require 'uri'
 require 'base64'
 
 class PagesController < ApplicationController
-  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort, :add]
+  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort, :add, :changename]
   before_action :set_book
 
   # GET /pages
@@ -213,6 +213,10 @@ class PagesController < ApplicationController
     # rescue
     # end
     @orders = @page.orders.order("number ASC")
+  end
+
+  def changename
+    @page.update(title: params[:name])
   end
 
   private

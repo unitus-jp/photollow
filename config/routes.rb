@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       member do
         post "sort"
         post "add"
+        post "changename"
       end
       resources :images, only: [] do
         member do
