@@ -25,23 +25,22 @@ ActiveRecord::Schema.define(version: 20160317080250) do
   add_index "books", ["name"], name: "index_books_on_name", unique: true
 
   create_table "images", force: :cascade do |t|
-    t.string   "url",        null: false
-    t.binary   "data",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.binary   "data",        null: false
+    t.string   "hashed_data", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  add_index "images", ["url"], name: "index_images_on_url", unique: true
+  add_index "images", ["hashed_data"], name: "index_images_on_hashed_data", unique: true
 
   create_table "orders", force: :cascade do |t|
     t.integer  "number",     null: false
+    t.string   "image_id",   null: false
     t.integer  "page_id"
-    t.integer  "image_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_index "orders", ["image_id"], name: "index_orders_on_image_id"
   add_index "orders", ["page_id"], name: "index_orders_on_page_id"
 
   create_table "pages", force: :cascade do |t|

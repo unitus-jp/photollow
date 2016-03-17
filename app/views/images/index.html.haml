@@ -9,7 +9,7 @@
   %tbody
     - @images.each do |image|
       %tr
-        %td= image.url
+        %td= image.hashed_data
         %td= image.page
         %td= link_to 'Show', image
         %td= link_to 'Edit', edit_image_path(image)

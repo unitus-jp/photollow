@@ -154,7 +154,7 @@ class PagesController < ApplicationController
     @page.images.delete_all
     data = params[:order]
     data.each_with_index do |id, index|
-      Order.create(page_id: @page.id, image_id: id.to_i, number: index)
+      Order.create(page_id: @page.id, image_id: id, number: index)
     end
     respond_to do |format|
       format.json { render json: {status: "success" } }
@@ -239,7 +239,8 @@ class PagesController < ApplicationController
     def save_and_connect_image(url, page, order)
       @order = Order.new(number: order)
       binary = Base64.encode64(open(url).read)
-      image = Image.find_or_create_by(url: url) do |i|
+      hashed_data = Digest::MD5.hexdigest(binary)
+      image = Image.find_or_create_by(hashed_data: hashed_data) do |i|
         i.data = binary
       end
       image.update(data: binary) if image.data != binary
