@@ -5,7 +5,7 @@ require 'uri'
 require 'base64'
 
 class PagesController < ApplicationController
-  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort, :add, :changename]
+  before_action :set_page, only: [:show, :edit, :update, :destroy, :sort, :add, :changename, :delete_image]
   before_action :set_book
 
   # GET /pages
@@ -159,6 +159,12 @@ class PagesController < ApplicationController
     respond_to do |format|
       format.json { render json: {status: "success" } }
     end
+  end
+
+  def delete_image
+    @order = @page.orders.find_by(image_id: params[:image_id])
+    @order.destroy
+    @orders = @page.orders.order("number ASC")
   end
 
   def add

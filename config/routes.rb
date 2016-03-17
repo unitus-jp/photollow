@@ -6,6 +6,7 @@ Rails.application.routes.draw do
         post "sort"
         post "add"
         post "changename"
+        delete "delete_image"
       end
       resources :images, only: [] do
         member do

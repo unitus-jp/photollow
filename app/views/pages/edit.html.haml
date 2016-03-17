@@ -15,13 +15,13 @@
 //   %strong thumbnail:
 //   %img{:src => "data:text/plain;base64, #{@page.thumbnail}", id: "thumbnail"}/
 
-#addmodal.modal.fade{"aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
+#addmodal.modal.fade{"aria-labelledby" => "addModalLabel", :role => "dialog", :tabindex => "-1"}
   .modal-dialog{:role => "document"}
     .modal-content
       .modal-header
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
-        %h4#myModalLabel.modal-title Modal title
+        %h4#addmodalLabel.modal-title Modal title
       .modal-body
         %span#beforenumber
         枚目の後に画像を追加する
@@ -40,6 +40,19 @@
       .modal-footer
         %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
         %button#addimage.btn.btn-primary{:type => "button"} Save changes
+#deletemodal.modal.fade{"aria-labelledby" => "deletemodalLabel", :role => "dialog", :tabindex => "-1"}
+  .modal-dialog{:role => "document"}
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+        %h4#deletemodalLabel.modal-title Modal title
+      .modal-body
+        #delete-image_id.hidden
+        本当に削除しますか？
+      .modal-footer
+        %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
+        %button#deleteimage.btn.btn-danger{:type => "button"} Delete
 .row
   .col-md-2
   .col-md-8
@@ -54,22 +67,6 @@
 
 :javascript
   $(function(){
-    $('#resize').resizable({
-      containment: "#main",
-      minWidth: 240
-    })
-    $('#sort').sortable()
-    $(".set-thumbnail").on("click", function(){
-      var data = this.parentElement.parentElement
-      var img_id = data.id.split('image-')[1]
-      $.ajax({
-        type: "POST",
-        url: ("/books/#{@book.id}/pages/#{@page.id}/images/" + img_id + "/thumbnail"),
-        success: function(data){
-         $("#thumbnail")[0].src = "data:text/plain;base64, " + data.data
-        }
-      });
-    })
     $("#addimage").on("click", function(){
       $.ajax({
         type: "POST",
@@ -84,22 +81,15 @@
         }
       })
     });
-    $('#sort').on('sortstop', function(){
-      sorted_order = []
-      $("#sort .item").each(function(index, data){
-        sorted_order.push(data.id.split("image-")[1])
-      })
+    $("#deleteimage").on("click", function(){
       $.ajax({
-        type: "POST",
-        url: ("/books/#{@book.id}/pages/#{@page.id}/sort"),
+        type: "DELETE",
+        url: ("/books/#{@book.id}/pages/#{@page.id}/delete_image"),
         data: {
-            "order": sorted_order
+          "image_id": $("#delete-image_id").text()
         },
         success: function(data){
-          $(".index").each(function(index, data){$(data).text(index + 1)})
         }
-      });
-
-    })
-
+      })
+    });
   })

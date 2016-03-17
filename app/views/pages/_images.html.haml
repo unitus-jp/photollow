@@ -6,6 +6,8 @@
         .menubar
           .set-thumbnail
             = fa_icon "tv"
+          .remove-image{ id: "data-#{order.image.id}", "data-target" => "#deletemodal", "data-toggle" => "modal", :type => "button"}
+            = fa_icon "times"
         .mask-top
           .sidemenu{ class: "number-#{index}", "data-target" => "#addmodal", "data-toggle" => "modal", :type => "button"}
             = fa_icon "plus", text: "ここに追加"
@@ -17,11 +19,50 @@
 
 :javascript
   $(function(){
+    $('#resize').resizable({
+      containment: "#main",
+      minWidth: 240
+    })
+    $('#sort').sortable()
     $('#addmodal').modal('hide');
-
+    $('#deletemodal').modal('hide');
+    $('#sort').off('sortstop')
+    $('#sort').on('sortstop', function(){
+      sorted_order = []
+      $("#sort .item").each(function(index, data){
+        sorted_order.push(data.id.split("image-")[1])
+      })
+      $.ajax({
+        type: "POST",
+        url: ("/books/#{@book.id}/pages/#{@page.id}/sort"),
+        data: {
+            "order": sorted_order
+        },
+        success: function(data){
+          $(".index").each(function(index, data){$(data).text(index + 1)})
+        }
+      });
+    })
     $(".sidemenu").off("click")
     $(".sidemenu").on("click", function(){
       var order = this.className.split(" ")[0].split("number-")[1];
       $("#beforenumber").text(order)
+    })
+    $(".remove-image").off("click")
+    $(".remove-image").on("click", function(){
+      window.hoge = this
+      $("#delete-image_id").text(hoge.id.split("data-")[1]);
+    })
+    $(".set-thumbnail").off("click")
+    $(".set-thumbnail").on("click", function(){
+      var data = this.parentElement.parentElement
+      var img_id = data.id.split('image-')[1]
+      $.ajax({
+        type: "POST",
+        url: ("/books/#{@book.id}/pages/#{@page.id}/images/" + img_id + "/thumbnail"),
+        success: function(data){
+         $("#thumbnail")[0].src = "data:text/plain;base64, " + data.data
+        }
+      });
     })
   })
