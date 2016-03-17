@@ -28,28 +28,26 @@
         .field
           %label URL
           %br
-          %input{ type:"text", value: "", id:"add_url" }
+          %input{ type:"text", value: "", id:"add_url", class: "form-control"}
         .field
           %label under_width
           %br/
-          = number_field :under_width, nil, {min: 0, value: 300, id: "add_under_width"}
+          = number_field :under_width, nil, {min: 0, value: 300, id: "add_under_width", class: "form-control"}
         .field
           %label under_height
           %br/
-          = number_field :under_height, nil, {min: 0, value: 300, id: "add_under_height"}
+          = number_field :under_height, nil, {min: 0, value: 300, id: "add_under_height", class: "form-control"}
       .modal-footer
         %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
         %button#addimage.btn.btn-primary{:type => "button"} Save changes
-.container
-  .row
-    .col-md-3
-    .col-md-6
-      #title
-        = render partial: "titlecomplete", locals: {name: @page.title}
-      = render 'form'
-      %article#main.edit
-        = render partial: "images", locals: {orders: @orders}
-    .col-md-3
+.row
+  .col-md-2
+  .col-md-8
+    #title
+      = render partial: "titlecomplete", locals: {name: @page.title}
+    %article#main.edit
+      = render partial: "images", locals: {orders: @orders}
+  .col-md-2
 = link_to 'Show', book_page_path(@book, @page)
 |
 = link_to 'Back', book_pages_path(@book)
