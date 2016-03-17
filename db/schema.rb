@@ -41,10 +41,11 @@ ActiveRecord::Schema.define(version: 20160317080250) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "orders", ["image_id"], name: "index_orders_on_image_id"
   add_index "orders", ["page_id"], name: "index_orders_on_page_id"
 
   create_table "pages", force: :cascade do |t|
-    t.integer  "book_id"
+    t.string   "book_id",    null: false
     t.string   "url",        null: false
     t.binary   "thumbnail"
     t.string   "title",      null: false
