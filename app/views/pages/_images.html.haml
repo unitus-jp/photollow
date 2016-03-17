@@ -1,6 +1,6 @@
 #resize
   .items#sort
-    - @orders.each_with_index do |order, index|
+    - orders.each_with_index do |order, index|
       .item{id: "image-#{order.image.id}"}
         %img{:src => "data:text/plain;base64, #{order.image.data}"}/
         .menubar
@@ -14,3 +14,14 @@
             = fa_icon "plus", text: "ここに追加", class: "number-1#{index + 1}"
         .index
           = index + 1
+
+:javascript
+  $(function(){
+    $('#addmodal').modal('hide');
+
+    $(".sidemenu").off("click")
+    $(".sidemenu").on("click", function(){
+      var order = this.className.split(" ")[0].split("number-")[1];
+      $("#beforenumber").text(order)
+    })
+  })

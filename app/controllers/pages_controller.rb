@@ -209,6 +209,8 @@ class PagesController < ApplicationController
           new_order.update(number: order)
           order += 1
         end
+
+        @orders = @page.orders.order("number ASC")
       end
     # rescue
     # end

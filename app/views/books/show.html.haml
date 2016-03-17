@@ -8,7 +8,7 @@
 
 - @pages.each do |page|
   = page.title
-  %img{src: "#{page.thumbnail}"}
+  %img{:src => "data:text/plain;base64, #{page.thumbnail}"}/
 
 = link_to 'Edit', edit_book_path(@book)
 |

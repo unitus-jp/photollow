@@ -72,10 +72,6 @@
         }
       });
     })
-    $(".sidemenu").on("click", function(){
-      var order = this.className.split(" ")[0].split("number-")[1];
-      $("#beforenumber").text(order)
-    })
     $("#addimage").on("click", function(){
       $.ajax({
         type: "POST",
@@ -87,7 +83,6 @@
           "under_width":  $("#add_under_width")[0].value
         },
         success: function(data){
-          $('#addModal').modal('hide')
         }
       })
     });
