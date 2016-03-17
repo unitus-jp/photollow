@@ -43,7 +43,7 @@ article {
       &:hover {
         background-color: #f7f7f7;
         .menubar {
-          display: block;
+          display: table;
         }
       }
       .menubar {
@@ -52,6 +52,13 @@ article {
         right: 0px;
         z-index: 6;
         display: none;
+        width: 64px;
+        background-color: #ddd;
+        padding: 4px;
+        & > * {
+          display: table-cell;
+          text-align: center;
+        }
       }
       .sidemenu {
         height: 18px;
