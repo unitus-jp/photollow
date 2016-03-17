@@ -1,1 +1,24 @@
-index.html.haml
+
+#dashboard.index
+  %section.books
+    %h1 本から探す
+    .row.sample
+      - @books.each do |book|
+        .col-xs-3
+          = book.title
+  %section.pages
+    %h1 ページから探す
+    .row.sample
+      - @pages.each do |page|
+        .col-xs-3
+          = page.title
+
+:javascript
+  $(function(){
+    $('.sample').slick({
+      autoplay:true,
+      autoplaySpeed:2000,
+      dots:true,
+      pauseOnHover:true
+    });
+  });

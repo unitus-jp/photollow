@@ -29,8 +29,9 @@ gem 'nokogiri'
 gem 'haml-rails'
 gem 'fastimage'
 gem 'rmagick'
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
 gem 'bootstrap-sass', '~> 3.3.6'
+gem 'composite_primary_keys'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
