@@ -34,7 +34,7 @@ class PagesController < ApplicationController
   # POST /pages.json
   def create
     redirect_to new_book_page_path(@book) unless valid_url?(page_params[:url])
-    order = @book.pages ? @book.pages.maximum("order").to_i + 1 : 0
+    order = @book.pages ? @book.pages.maximum("order").to_i + 1 : 1
     params[:page][:order] = order
     @page = Page.new(page_params)
     @page.book = @book
@@ -144,6 +144,10 @@ class PagesController < ApplicationController
   # DELETE /pages/1.json
   def destroy
     @page.destroy
+    @pages = @page.book.pages.sort{|a,b| a.order <=> b.order}
+    @pages.each_with_index do |page, index|
+      page.update(order: index+1)
+    end
     respond_to do |format|
       format.html { redirect_to book_pages_url(@book), notice: 'Page was successfully destroyed.' }
       format.json { head :no_content }
@@ -230,7 +234,7 @@ class PagesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_page
-      @page = Page.find(params[:id])
+      @page = Page.find_by!(order: params[:order])
     end
 
     def set_book
