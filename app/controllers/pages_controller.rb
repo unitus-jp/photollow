@@ -63,6 +63,8 @@ class PagesController < ApplicationController
       doc.css("body img").each do |img|
         url = img.attributes["src"].value
         width, height = FastImage.size(url)
+        width ||= 0
+        height ||= 0
 
         if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
           binary = save_and_connect_image(url, @page, order)
@@ -114,6 +116,8 @@ class PagesController < ApplicationController
       doc.css("body img").each do |img|
         url = img.attributes["src"].value
         width, height = FastImage.size(url)
+        width ||= 0
+        height ||= 0
 
         if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
           binary = save_and_connect_image(url, @page, order)
@@ -194,6 +198,8 @@ class PagesController < ApplicationController
         doc.css("body img").each do |img|
           url = img.attributes["src"].value
           width, height = FastImage.size(url)
+          width ||= 0
+          height ||= 0
           if height > params[:under_height].to_i && width > params[:under_width].to_i
             binary = save_and_connect_image(url, @page, order)
           end
