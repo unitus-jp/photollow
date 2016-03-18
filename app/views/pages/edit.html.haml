@@ -61,9 +61,9 @@
     %article#main.edit
       = render partial: "images", locals: {orders: @orders}
   .col-md-2
-= link_to 'Show', book_custom_page_path(@book, @page.order)
+= link_to 'Show', book_page_path(@book, @page.order)
 |
-= link_to 'Back', book_custom_page_index_path(@book)
+= link_to 'Back', book_pages_path(@book)
 
 :javascript
   $(function(){

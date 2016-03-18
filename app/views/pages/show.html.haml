@@ -19,9 +19,9 @@
         .item
           %img{:src => "data:text/plain;base64, #{order.image.data}"}/
 
-= link_to 'Edit', edit_book_custom_page_path(@book, @page.order)
+= link_to 'Edit', edit_book_page_path(@book, @page.order)
 |
-= link_to 'Back', book_custom_page_index_path(@book)
+= link_to 'Back', book_pages_path(@book)
 
 :javascript
   $(function(){

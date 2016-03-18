@@ -33,7 +33,7 @@ class PagesController < ApplicationController
   # POST /pages
   # POST /pages.json
   def create
-    redirect_to new_book_custom_page_path(@book) unless valid_url?(page_params[:url])
+    redirect_to new_book_page_path(@book) unless valid_url?(page_params[:url])
     order = @book.pages ? @book.pages.maximum("order").to_i + 1 : 1
     params[:page][:order] = order
     @page = Page.new(page_params)
@@ -55,7 +55,7 @@ class PagesController < ApplicationController
       rescue OpenURI::HTTPError => error
         response = error.io
         respond_to do |format|
-          format.html { redirect_to book_custom_page_index_path(@book), notice: "failed loading image" and return }
+          format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
         end
       end
       doc = Nokogiri::HTML.parse(html, nil, charset)
@@ -78,7 +78,7 @@ class PagesController < ApplicationController
 
     respond_to do |format|
       if @page.save
-        format.html { redirect_to book_custom_page_path(@book, @page.order), notice: 'Page was successfully created.' }
+        format.html { redirect_to book_page_path(@book, @page.order), notice: 'Page was successfully created.' }
         format.json { render :show, status: :created, location: @page }
       else
         format.html { render :new }
@@ -90,7 +90,7 @@ class PagesController < ApplicationController
   # PATCH/PUT /pages/1
   # PATCH/PUT /pages/1.json
   def update
-    redirect_to edit_book_custom_page_index_path(@book, @page.order) unless valid_url?(page_params[:url])
+    redirect_to edit_book_pages_path(@book, @page.order) unless valid_url?(page_params[:url])
     site_url = page_params[:url]
 
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
@@ -107,7 +107,7 @@ class PagesController < ApplicationController
       rescue OpenURI::HTTPError => error
         response = error.io
         respond_to do |format|
-          format.html { redirect_to book_custom_page_index_path(@book), notice: "failed loading image" and return }
+          format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
         end
       end
       @page.images.delete_all
@@ -131,7 +131,7 @@ class PagesController < ApplicationController
 
     respond_to do |format|
       if @page.update(page_params)
-        format.html { redirect_to book_custom_page_path(@book, @page.order), notice: 'Page was successfully updated.' }
+        format.html { redirect_to book_page_path(@book, @page.order), notice: 'Page was successfully updated.' }
         format.json { render :show, status: :ok, location: @page }
       else
         format.html { render :edit }
@@ -149,7 +149,7 @@ class PagesController < ApplicationController
       page.update(order: index+1)
     end
     respond_to do |format|
-      format.html { redirect_to book_custom_page_index_path(@book), notice: 'Page was successfully destroyed.' }
+      format.html { redirect_to book_pages_path(@book), notice: 'Page was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -157,7 +157,6 @@ class PagesController < ApplicationController
   def sort
     @page.images.delete_all
     data = params[:image_order]
-    binding.pry
     data.each_with_index do |id, index|
       Order.create(page_id: @page.id, image_id: id, number: index)
     end
@@ -196,7 +195,7 @@ class PagesController < ApplicationController
         rescue OpenURI::HTTPError => error
           response = error.io
           respond_to do |format|
-            format.html { redirect_to book_custom_page_index_path(@book), notice: "failed loading image" and return }
+            format.html { redirect_to book_pages_path(@book), notice: "failed loading image" and return }
           end
         end
         doc = Nokogiri::HTML.parse(html, nil, charset)
@@ -235,7 +234,7 @@ class PagesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_page
-      redirect_to book_custom_page_index_path(@book) unless @page = @book.pages.find_by(order: params[:order])
+      redirect_to book_pages_path(@book) unless @page = @book.pages.find_by(order: params[:order])
     end
 
     def set_book
