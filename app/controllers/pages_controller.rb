@@ -45,6 +45,7 @@ class PagesController < ApplicationController
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
       binary = save_and_connect_image(site_url, @page, 0)
       @page.update(thumbnail: binary)
+      @book.update(thumbnail: binary) if @book.thumbnail.nil?
     else
       begin
         html = open(site_url) do |f|
@@ -70,6 +71,7 @@ class PagesController < ApplicationController
           binary = save_and_connect_image(url, @page, order)
           if order == 0
             @page.update(thumbnail: binary)
+            @book.update(thumbnail: binary) if @book.thumbnail.nil?
           end
           order += 1
         end
@@ -97,6 +99,7 @@ class PagesController < ApplicationController
       @page.images.delete_all
       binary = save_and_connect_image(site_url, @page, 0)
       @page.update(thumbnail: binary)
+      @book.update(thumbnail: binary) if @book.thumbnail.nil?
     else
       begin
         charset = nil
@@ -123,6 +126,7 @@ class PagesController < ApplicationController
           binary = save_and_connect_image(url, @page, order)
           if order == 0
             @page.update(thumbnail: binary)
+            @book.update(thumbnail: binary) if @book.thumbnail.nil?
           end
           order += 1
         end

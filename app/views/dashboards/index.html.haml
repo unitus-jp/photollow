@@ -6,18 +6,21 @@
       - @books.each do |book|
         .col-xs-3
           = book.title
+          %img{:src => "data:text/plain;base64, #{book.thumbnail}"}/
   %section.pages
     %h1 ページから探す
     .row.sample
       - @pages.each do |page|
         .col-xs-3
           = page.title
-
+          %img{:src => "data:text/plain;base64, #{page.thumbnail}"}/
 :javascript
   $(function(){
     $('.sample').slick({
       autoplay:true,
       autoplaySpeed:2000,
+      slidesToShow: 4,
+      slidesToScroll: 2,
       dots:true,
       pauseOnHover:true
     });
