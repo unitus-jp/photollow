@@ -1,0 +1,163 @@
+#dashboard.index{
+  .board {
+    background-image: url("board.png");
+    height: 100px;
+    background-size: contain;
+  }
+  .slick-dots {
+    bottom: -80px;
+  }
+  .slick-prev, .slick-next {
+    display: none !important;
+  }
+  section.books {
+    .item {
+      &:before {
+        content: "";
+        background-color: white;
+        display: block;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+      }
+    }
+  }
+  section{
+    position: relative;
+    h1 {
+      display: none;
+      padding-left: 24px;
+      padding-right: 24px;
+      font-size: 24px;
+      line-height: 48px;
+      border: solid 1px #ddd;
+      border-left: #F37389 solid 8px;
+      border-right: #F37389 solid 8px;
+      box-shadow: 1px 1px 3px #ddd;
+      background-color: white;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+    .hangboard {
+      background-image: url("hangboard.png");
+      height: 140px;
+      width: 130px;
+      background-size: contain;
+      position: absolute;
+      z-index: 22;
+      top: -18px;
+      left: 22px;
+      box-sizing: border-box;
+      padding-top: 76px;
+      text-align: center;
+      font-size: 19px;
+      text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.4), 1px 1px 1px rgba(255, 255, 255, 0.5);
+      color: #444;
+    }
+    .shelf {
+      background-image: url("shelf.png");
+      padding: 40px 0px;
+      margin: 0px;
+      background-size: contain;
+      background-position: -1% 0%;
+      .slick-slide {
+        margin: 0 8px;
+      }
+      .slick-list {
+        -webkit-box-reflect: below 4px -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(0.9, transparent), to(rgba(0,0,0,0.4)));
+      }
+      .slick-slider {
+        margin: 0;
+      }
+      .slick-dots {
+        position: absolute;
+        top: 8px;
+        height: 24px;
+        margin: 0;
+        li {
+          &.slick-active {
+            button {
+              &:before {
+                color: #210F01;
+              }
+            }
+          }
+          button {
+            &:before {
+              color: rgba(90, 47, 0, 0.84);
+              text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.4), 1px 1px 1px rgba(255, 255, 255, 0.5);
+              opacity: 0.7;
+            }
+          }
+        }
+      }
+    }
+    .item {
+      width: 100%;
+      position: relative;
+      background-color: white;
+      &:after {
+        content: '';
+        display: table;
+        padding-top: 141%;
+      }
+      .content {
+        overflow: hidden;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        background-color: #908F8F;
+        &:hover {
+          .title {
+            color: #D28C97;
+          }
+        }
+        &:after {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          bottom: 0px;
+          right: 0px;
+          content: '';
+          display: block;
+          background: -moz-linear-gradient(top, transparent 0%, transparent 50%, white 95%, white 100%);
+          background: -webkit-linear-gradient(top, transparent 0%, transparent 50%, white 95%, white 100%);
+          background: linear-gradient(top, bottom, transparent 0%, transparent 50%, white 95%, white 100%);
+          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='#fff',GradientType=0 );
+        }
+        img {
+          height: 100%;
+          min-width: 100%;
+        }
+        .not_found {
+          position: absolute;
+          top: calc(50% - 24px);
+          height: 24px;
+          width: 100%;
+          text-align: center;
+          color: rgba(255, 255, 255, 0.74);
+          .fa {
+            font-size: 40px;
+            display: block;
+          }
+          p {
+            margin-top: 8px;
+          }
+        }
+        .title {
+          position: absolute;
+          z-index: 10;
+          bottom: 4px;
+          left: 10px;
+          color: #777;
+        }
+
+      }
+    }
+  }
+}
+
