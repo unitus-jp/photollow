@@ -7,8 +7,9 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body
-    / %header
-    /   .brand
-    /     =  t("oredou.title")
+    %header
+      = link_to root_url do
+        .brand
+          =  t("oredou.title")
     .container
       = yield

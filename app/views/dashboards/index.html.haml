@@ -1,25 +1,53 @@
 
 #dashboard.index
+  .board
   %section.books
     %h1 本から探す
-    .row.sample
-      - @books.each do |book|
-        .col-xs-3
-          = book.title
-          %img{:src => "data:text/plain;base64, #{book.thumbnail}"}/
+    / .hangboard
+    /   新着
+    - @books.each do |books|
+      .shelf.items
+        - books.each do |book|
+          = link_to book_path(book) do
+            .item
+              .content
+                - if book.thumbnail.nil?
+                  .not_found
+                    = fa_icon "photo"
+                    %p
+                      サムネイルがありません
+                - else
+                  %img.image{:src => "data:text/plain;base64, #{book.thumbnail}"}/
+                .title
+                  = book.title
+  .board
+    ページから探す
   %section.pages
     %h1 ページから探す
-    .row.sample
-      - @pages.each do |page|
-        .col-xs-3
-          = page.title
-          %img{:src => "data:text/plain;base64, #{page.thumbnail}"}/
+    / .hangboard
+    /   新着
+    - @pages.each do |pages|
+      .shelf.items
+        - pages.each do |page|
+          = link_to book_page_path(page.book, page.order) do
+            .item
+              .content
+                - if page.thumbnail.nil?
+                  .not_found
+                    = fa_icon "photo"
+                    %p
+                      サムネイルがありません
+                - else
+                  %img.image{:src => "data:text/plain;base64, #{page.thumbnail}"}/
+                .title
+                  = page.title
 :javascript
   $(function(){
-    $('.sample').slick({
+    $('.items').slick({
       autoplay:true,
       autoplaySpeed:2000,
-      slidesToShow: 4,
+      centerMode: true,
+      slidesToShow: 5,
       slidesToScroll: 2,
       dots:true,
       pauseOnHover:true
