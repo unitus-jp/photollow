@@ -3,7 +3,7 @@ class CreateBooks < ActiveRecord::Migration
     create_table :books do |t|
       t.string :name, null: false
       t.string :title, null: false
-      t.binary :thumbnail, null: false
+      t.binary :thumbnail
       t.text :description
 
       t.timestamps null: false
