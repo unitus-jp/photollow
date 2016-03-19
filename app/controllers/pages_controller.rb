@@ -44,6 +44,7 @@ class PagesController < ApplicationController
 
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
       binary = save_and_connect_image(site_url, @page, 0)
+      binary = to_thumbnail(binary)
       @page.update(thumbnail: binary)
       @book.update(thumbnail: binary) if @book.thumbnail.nil?
     else
@@ -70,6 +71,7 @@ class PagesController < ApplicationController
         if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
           binary = save_and_connect_image(url, @page, order)
           if order == 0
+            binary = to_thumbnail(binary)
             @page.update(thumbnail: binary)
             @book.update(thumbnail: binary) if @book.thumbnail.nil?
           end
@@ -98,6 +100,7 @@ class PagesController < ApplicationController
     if  /.*(jpg|JPG|jpeg|JPG|gif)\z/ =~ site_url
       @page.images.delete_all
       binary = save_and_connect_image(site_url, @page, 0)
+      binary = to_thumbnail(binary)
       @page.update(thumbnail: binary)
       @book.update(thumbnail: binary) if @book.thumbnail.nil?
     else
@@ -125,6 +128,7 @@ class PagesController < ApplicationController
         if height > params[:under_height][0].to_i && width > params[:under_width][0].to_i
           binary = save_and_connect_image(url, @page, order)
           if order == 0
+            binary = to_thumbnail(binary)
             @page.update(thumbnail: binary)
             @book.update(thumbnail: binary) if @book.thumbnail.nil?
           end
@@ -263,6 +267,14 @@ class PagesController < ApplicationController
       @order.image = image
       @order.save
 
+      return binary
+    end
+
+    def to_thumbnail(binary)
+      raw = Base64.decode64(binary)
+      original = Magick::Image.from_blob(raw).first
+      image = original.resize_to_fill(500, 710)
+      binary = Base64.encode64(image.to_blob)
       return binary
     end
 

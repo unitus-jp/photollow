@@ -2,7 +2,7 @@ class ImagesController < ApplicationController
   before_action :set_params
 
   def thumbnail
-    @page.update(thumbnail: @image.data)
+    @page.update(thumbnail: to_thumbnail(@image.data))
     respond_to do |format|
       format.json { render json: {data: @image.data } }
     end
@@ -20,5 +20,11 @@ class ImagesController < ApplicationController
     def image_params
       params.require(:image).permit(:data)
     end
-
+    def to_thumbnail(binary)
+      raw = Base64.decode64(binary)
+      original = Magick::Image.from_blob(raw).first
+      image = original.resize_to_fill(500, 710)
+      binary = Base64.encode64(image.to_blob)
+      return binary
+    end
 end

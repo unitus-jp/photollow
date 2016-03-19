@@ -1,6 +1,12 @@
 class DashboardsController < ApplicationController
   def index
-    @books = Book.all.shuffle.first(25)
-    @pages = Page.all.shuffle.first(25)
+    @books = []
+    4.times do |i|
+      @books[i] = Book.all.shuffle.first(25)
+    end
+    @pages = []
+    4.times do |i|
+      @pages[i] = Page.all.shuffle.first(25)
+    end
   end
 end
